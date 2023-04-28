@@ -1,0 +1,367 @@
+# ABOUT SYNTAX
+# lines starting with "#" or "\n" are ignored
+# problems and labels occur in the form A, B, A, B, ..., A, B
+# where A is a problem and B is a label
+# A problem description starts a line ---PROBLEM, the token ---PROBLEM is not part of the problem
+# A label starts with a line containing the token CODE_BLOCK_START, the token CODE_BLOCK_START is part of the label
+
+# propositional logic
+---PROBLEM
+A is B.
+CODE_BLOCK_START
+blockdiag {
+  A -> B;
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+A->B
+CODE_BLOCK_START
+seqdiag {
+    A -> B
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=seqdiag
+
+---PROBLEM
+A and B are in C.
+CODE_BLOCK_START
+blockdiag {
+  A -> C
+  B -> C
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+A is in C but B is outside of C. Everything is in D.
+CODE_BLOCK_START
+blockdiag {
+    A -> C;
+    B -> D;
+    C -> D;
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+not A and not B.
+CODE_BLOCK_START
+[A] -& [B]
+CODE_BLOCK_STOP
+DIAGRAM_API=nomnoml
+
+---PROBLEM
+A implies B while not A implies not B.
+CODE_BLOCK_START
+graph LR
+    A[A] -- implies --> B[B]
+    notA[notA] --> notB[notB]
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+# ontologies, sets
+---PROBLEM
+Apple -> Fruit,
+CODE_BLOCK_START
+blockdiag {
+  Apple -> Fruit
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+An apple is a fruit.
+CODE_BLOCK_START
+classDiagram
+Apple --|> Fruit
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+---PROBLEM
+An apple is a fruit and a banana is a fruit.
+CODE_BLOCK_START
+classDiagram
+Apple --|> Fruit
+Banana --|> Fruit
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+---PROBLEM
+An apple is a fruit, a banana is a fruit. A carrot is a vegetable.
+CODE_BLOCK_START
+classDiagram
+Apple --|> Fruit
+Banana --|> Fruit
+Carrot --|> Vegetable
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+# ontologies and sets with inference
+---PROBLEM
+I like all fruit, strawberry is a fruit. Do I like strawberry? Complete the relation and make a diagram.
+CODE_BLOCK_START
+blockdiag {
+  "I like all fruit" -> "strawberry is a fruit" -> "I like strawberry"
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+Paul likes all fruit. A lemon is a fruit. Does Paul like lemon? Make a diagram.
+CODE_BLOCK_START
+blockdiag {
+  "Paul likes all fruit" -> "a lemon is a fruit" -> "Paul likes lemon"
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+Paul likes all fruit. A lemon is a fruit. Does Paul like lemon?
+CODE_BLOCK_START
+sequenceDiagram
+    participant Paul
+    participant Lemmon
+    Paul->>+Lemmon: like
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+---PROBLEM
+Paul likes all fruit. A lemon is a fruit. Complete the relation.
+CODE_BLOCK_START
+entity "Paul"
+entity "Fruit"
+entity "Lemon"
+
+Paul --> Fruit
+Lemon --> Fruit
+CODE_BLOCK_STOP
+DIAGRAM_API=plantuml
+
+# inheritance and code relations
+---PROBLEM
+The plotting module imports const and analysis. The SPICE signal generator module inherits from the abstract generator module. Generate me a Kroki diagram for my description.
+CODE_BLOCK_START
+classDiagram
+    class const {
+    }
+
+    class analysis {
+    }
+
+    class plotting {
+    }
+
+    class abstract_generator {
+    }
+    
+    class SPICE_signal_generator {
+    }
+
+    analysis <-- const
+    analysis <-- plotting
+
+    SPICE_signal_generator <|-- abstract_generator
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+---PROBLEM
+The plotting module uses methods from the classes const and analysis. The SPICE signal generator class inherits from the abstract generator class.
+CODE_BLOCK_START
+classDiagram
+    class const {
+    }
+
+    class analysis {
+    }
+
+    class plotting {
+    }
+
+    class abstract_generator {
+    }
+    
+    class SPICE_signal_generator {
+    }
+
+    analysis <-- const
+    analysis <-- plotting
+
+    SPICE_signal_generator <|-- abstract_generator
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+# time series of agents and events
+---PROBLEM
+John and Tiffany went on a walk. Afterwards they went shopping. In the evening they watched a movie.
+CODE_BLOCK_START
+gantt
+dateFormat YYYY-MM-DD
+title John and Tiffany's Day
+section Walk
+John :after 2023-03-01, 1d
+Tiffany :after John, 1d
+section Shopping
+John :after 2023-03-02, 1d
+Tiffany :after John, 1d
+section Movie
+John :after 2023-03-03, 1d
+Tiffany :after John, 1d
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+# requesting a specific diagram type
+---PROBLEM
+Make a state machine for a coffee machine.
+CODE_BLOCK_START
+[*] --> idle
+idle --> brewing : start
+brewing --> idle : finish
+brewing --> error : error_occured
+error --> idle : reset
+error --> brewing : start_after_reset
+CODE_BLOCK_STOP
+DIAGRAM_API=plantuml
+
+---PROBLEM
+Make a word frequency table with the following words: robert robert house church christ world triangle freedom. Use vega.
+CODE_BLOCK_START
+{
+  "width": 500,
+  "height": 500,
+  "padding": 5,
+
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {"word": "robert", "count": 2},
+        {"word": "house", "count": 1},
+        {"word": "chirch", "count": 1},
+        {"word": "christ", "count": 1},
+        {"word": "world", "count": 1},
+        {"word": "triangle", "count": 1},
+        {"word": "freedom", "count": 1}
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "xscale",
+      "type": "band",
+      "domain": {"data": "table", "field": "word"},
+      "range": "width"
+    },
+    {
+      "name": "yscale",
+      "type": "linear",
+      "domain": {"data": "table", "field": "count"},
+      "range": "height",
+      "nice": true,
+      "zero": true
+    }
+  ],
+
+  "axes": [
+    {"orient": "bottom", "scale": "xscale"},
+    {"orient": "left", "scale": "yscale"}
+  ],
+
+  "marks": [
+    {
+      "type": "text",
+      "from": {"data": "table"},
+      "encode": {
+        "enter": {
+          "x": {"scale": "xscale", "field": "word", "band": 0.5},
+          "y": {"scale": "yscale", "field": "count", "offset": -5},
+          "text": {"field": "word"},
+          "align": {"value": "center"},
+          "baseline": {"value": "bottom"},
+          "fill": {"value": "steelblue"},
+          "font": {"value": "Arial"},
+          "fontSize": {"value": 30}
+        },
+        "update": {
+          "fillOpacity": {"value": 1}
+        },
+        "hover": {
+          "fillOpacity": {"value": 0.5}
+        }
+      }
+    }
+  ]
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=vega
+
+# complex examples from the kroki website
+---PROBLEM
+The blockdiag API generates block-diagrams. The API is very easy to use!
+CODE_BLOCK_START
+blockdiag {
+  blockdiag -> generates -> "block-diagrams";
+  blockdiag -> is -> "very easy!";
+
+  blockdiag [color = "greenyellow"];
+  "block-diagrams" [color = "pink"];
+  "very easy!" [color = "orange"];
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+When a browser sends a GET request for the file /index.html to a webserver, the server directly responds to the browser. When a browser sends a POST request to a server in order to add a comment to some blog, then the server sends an INSERT request to the database. Once the database has acknowledged that the INSERT was successful, the server can acknowledge to the browser that the POST request was successful, too.,
+CODE_BLOCK_START
+seqdiag {
+  browser  -> webserver [label = "GET /index.html"];
+  browser <-- webserver;
+  browser  -> webserver [label = "POST /blog/comment"];
+  webserver  -> database [label = "INSERT comment"];
+  webserver <-- database;
+  browser <-- webserver;
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=seqdiag
+
+---PROBLEM
+First, a user writes some reST code. Then actdiag is used to convert the reST code to an image. Lastly, the user receives a diagram.
+CODE_BLOCK_START
+actdiag {
+  write -> convert -> image
+
+  lane user {
+    label = "User"
+    write [label = "Writing reST"];
+    image [label = "Get diagram IMAGE"];
+  }
+  lane actdiag {
+    convert [label = "Convert reST to Image"];
+  }
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=actdiag
+
+---PROBLEM
+Represent my network architecture. The architecture has two networks: dmz and internal. The dmz network has an IP address of 210.x.x.x/24 and contains two web servers with IP addresses of 210.x.x.1 and 210.x.x.2. The internal network has an IP address of 172.x.x.x/24 and contains two web servers with IP addresses of 172.x.x.1 and 172.x.x.2, as well as two database servers named db01 and db02.,
+CODE_BLOCK_START
+nwdiag {
+  network dmz {
+    address = "210.x.x.x/24"
+
+    web01 [address = "210.x.x.1"];
+    web02 [address = "210.x.x.2"];
+  }
+  network internal {
+    address = "172.x.x.x/24";
+
+    web01 [address = "172.x.x.1"];
+    web02 [address = "172.x.x.2"];
+    db01;
+    db02;
+  }
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=nwdiag

@@ -1,0 +1,87 @@
+# this playbook starts a kroki server
+
+# install ansible
+#    pip3 install ansible
+
+# run this playbook
+#   ansible-playbook -i hosts.ini kroki_playbook.yml -K
+#   -K queries sudo password
+#   --check runs in check mode
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Gather Ansible facts as non-root user
+      ansible.builtin.setup:
+        gather_subset: all
+      become: false
+
+    - name: Install aptitude
+      ansible.builtin.apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install docker dependencies
+      ansible.builtin.apt:
+        pkg:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        update_cache: true
+        state: latest
+
+    # sudo mkdir -m 0755 -p /etc/apt/keyrings
+    - name: Create keyring directory
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: 0755
+
+    # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    - name: Download Docker GPG key and add to APT keyring
+      ansible.builtin.apt_key:
+        keyserver: https://download.docker.com/linux/ubuntu/gpg # source
+        keyring: /etc/apt/keyrings/docker.gpg # destination
+        id: 0EBFCD88 # fingerprint of the Docker GPG key
+
+    #echo \
+    # "deb [arch=$(dpkg --print-architecture) signed-by=] https://download.docker.com/linux/ubuntu \
+    # $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        state: present
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        update_cache: true
+        state: present
+      
+    - name: Install Python Docker modules
+      ansible.builtin.pip:
+        name:
+          - docker
+          - docker-compose
+        state: present
+
+    - name: Start Docker service
+      ansible.builtin.systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    # docker-compose up -d
+    - name: Call Docker Compose to download and launch Kroki containers
+      community.docker.docker_compose:
+        files: "{{ playbook_dir }}/docker-compose.yml"
+        project_src: "{{ playbook_dir }}/../"
+      become_user: "{{ ansible_user_id }}"

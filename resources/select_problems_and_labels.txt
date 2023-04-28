@@ -1,0 +1,124 @@
+# ABOUT SYNTAX
+# lines starting with "#" or "\n" are ignored
+# problems and labels occur in the form A, B, A, B, ..., A, B
+# where A is a problem and B is a label
+# A problem description starts a line ---PROBLEM, the token ---PROBLEM is not part of the problem
+# A label starts with a line containing the token CODE_BLOCK_START, the token CODE_BLOCK_START is part of the label
+
+# propositional logic
+---PROBLEM
+A->B
+CODE_BLOCK_START
+seqdiag {
+    A -> B
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=seqdiag
+
+---PROBLEM
+A is in C but B is outside of C. Everything is in D.
+CODE_BLOCK_START
+blockdiag {
+    A -> C;
+    B -> D;
+    C -> D;
+}
+CODE_BLOCK_STOP
+DIAGRAM_API=blockdiag
+
+---PROBLEM
+not A and not B.
+CODE_BLOCK_START
+[A] -& [B]
+CODE_BLOCK_STOP
+DIAGRAM_API=nomnoml
+
+---PROBLEM
+A implies B while not A implies not B.
+CODE_BLOCK_START
+graph LR
+    A[A] -- implies --> B[B]
+    notA[notA] --> notB[notB]
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+---PROBLEM
+Paul likes all fruit. A lemon is a fruit. Does Paul like lemon?
+CODE_BLOCK_START
+sequenceDiagram
+    participant Paul
+    participant Lemmon
+    Paul->>+Lemmon: like
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+---PROBLEM
+Paul likes all fruit. A lemon is a fruit. Complete the relation.
+CODE_BLOCK_START
+entity "Paul"
+entity "Fruit"
+entity "Lemon"
+
+Paul --> Fruit
+Lemon --> Fruit
+CODE_BLOCK_STOP
+DIAGRAM_API=plantuml
+
+# inheritance and code relations
+---PROBLEM
+The plotting module imports const and analysis. The SPICE signal generator module inherits from the abstract generator module. Generate me a Kroki diagram for my description.
+CODE_BLOCK_START
+classDiagram
+    class const {
+    }
+
+    class analysis {
+    }
+
+    class plotting {
+    }
+
+    class abstract_generator {
+    }
+    
+    class SPICE_signal_generator {
+    }
+
+    analysis <-- const
+    analysis <-- plotting
+
+    SPICE_signal_generator <|-- abstract_generator
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+# time series of agents and events
+---PROBLEM
+John and Tiffany went on a walk. Afterwards they went shopping. In the evening they watched a movie.
+CODE_BLOCK_START
+gantt
+dateFormat YYYY-MM-DD
+title John and Tiffany's Day
+section Walk
+John :after 2023-03-01, 1d
+Tiffany :after John, 1d
+section Shopping
+John :after 2023-03-02, 1d
+Tiffany :after John, 1d
+section Movie
+John :after 2023-03-03, 1d
+Tiffany :after John, 1d
+CODE_BLOCK_STOP
+DIAGRAM_API=mermaid
+
+# state machines
+---PROBLEM
+Make a state machine for a coffee machine.
+CODE_BLOCK_START
+[*] --> idle
+idle --> brewing : start
+brewing --> idle : finish
+brewing --> error : error_occured
+error --> idle : reset
+error --> brewing : start_after_reset
+CODE_BLOCK_STOP
+DIAGRAM_API=plantuml

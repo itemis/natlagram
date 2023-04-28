@@ -1,0 +1,8 @@
+tiktoken
+openai
+matplotlib
+cairocffi
+pycairo
+cairosvg
+pdfkit
+weasyprint

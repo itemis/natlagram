@@ -1,7 +1,7 @@
 # natlagram, convert natural language to diagrams
 
 Natlagram builds on OpenAI's API and [Kroki](https://kroki.io/) to generate infographics from natural language descriptions.
-Read our upcoming article to learn more about its capabilities, limitations and inner workings.
+Read our [blog post](https://blogs.itemis.com/en/natlagram-creating-diagrams-from-text-with-the-help-of-gpt-and-kroki) to learn more about its capabilities, limitations and inner workings.
 
 ## Examples
 
